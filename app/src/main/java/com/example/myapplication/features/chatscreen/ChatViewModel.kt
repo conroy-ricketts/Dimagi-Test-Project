@@ -14,13 +14,14 @@ class ChatViewModel : ViewModel() {
 
     fun sendBotCommand(command: String) {
         try {
-            val response = "[bot] Test bot response"
             val newChatHistory = chatHistory.value?.toMutableList() ?: mutableListOf()
+            val verifiedCommand = checkCommand(command.lowercase())
+            val transformedCommand = transformCommand(verifiedCommand)
+            val userChatLog = "[you] $command"
+            val botChatLog = "[bot] $transformedCommand"
 
-            checkCommand(command.lowercase())
-
-            newChatHistory.add("[you] $command")
-            newChatHistory.add(response)
+            newChatHistory.add(userChatLog)
+            newChatHistory.add(botChatLog)
 
             _chatHistory.value = newChatHistory
         } catch (e: Exception) {
@@ -28,6 +29,7 @@ class ChatViewModel : ViewModel() {
         }
     }
 
+    // Check if the bot command is valid, and if so, return the enum.
     private fun checkCommand(command: String): Command {
         return when (command) {
             Command.HELP.toString() -> Command.HELP
@@ -35,5 +37,25 @@ class ChatViewModel : ViewModel() {
                 throw IllegalStateException("$command is not a valid command!")
             }
         }
+    }
+
+    // Do something with the bot command, and return the bot's response.
+    private fun transformCommand(command: Command): String {
+        return when (command) {
+            Command.HELP -> getHelpCommandResponse()
+        }
+    }
+
+    // Handle the help command, and return a response.
+    private fun getHelpCommandResponse(): String {
+        var response = "Here is a list of the available commands:"
+
+        for (command in Command.entries) {
+            when (command) {
+                Command.HELP -> response += "\n\t${command} - display all available commands"
+            }
+        }
+
+        return response
     }
 }
