@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.myapplication.features.ChatScreen
+import com.example.myapplication.features.chatscreen.ChatScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
