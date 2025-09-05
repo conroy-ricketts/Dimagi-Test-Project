@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import com.example.myapplication.features.ChatScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             MyApplicationTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Surface(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-                        Text(text = "Hello world")
+                        ChatScreen()
                     }
                 }
             }
