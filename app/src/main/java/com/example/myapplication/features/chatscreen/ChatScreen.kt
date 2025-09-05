@@ -1,9 +1,11 @@
 package com.example.myapplication.features.chatscreen
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -19,21 +21,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun ChatScreen() {
+fun ChatScreen(context: Context = LocalContext.current) {
+    val viewModel: ChatViewModel = viewModel()
+    val sendCommandErrorMessage by viewModel.sendCommandErrorMessage.observeAsState()
+
+    sendCommandErrorMessage?.let {
+        Toast.makeText(
+            context,
+            "There was an error sending the bot command!",
+            Toast.LENGTH_LONG
+        ).show()
+
+        Log.e("ChatScreen", "There was an error sending a command: $it")
+    }
+
     Column(modifier = Modifier.padding(horizontal = 10.dp)) {
-        InputTextBox()
+        InputTextBox(viewModel)
         Spacer(modifier = Modifier.height(20.dp))
-        ChatHistory()
+        ChatHistory(viewModel)
     }
 }
 
 @Composable
-fun InputTextBox() {
-    val viewModel: ChatViewModel = viewModel()
+fun InputTextBox(viewModel: ChatViewModel) {
     var text by remember { mutableStateOf("") }
 
     Row {
@@ -54,8 +69,7 @@ fun InputTextBox() {
 }
 
 @Composable
-fun ChatHistory() {
-    val viewModel: ChatViewModel = viewModel()
+fun ChatHistory(viewModel: ChatViewModel) {
     val chatHistory by viewModel.chatHistory.observeAsState(emptyList())
 
     LazyColumn {
