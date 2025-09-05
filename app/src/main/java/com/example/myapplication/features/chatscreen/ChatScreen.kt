@@ -31,26 +31,36 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun ChatScreen(context: Context = LocalContext.current) {
     val viewModel: ChatViewModel = viewModel()
     val sendCommandErrorMessage by viewModel.sendCommandErrorMessage.observeAsState()
+    val fetchFakeUsersErrorMessage by viewModel.fetchFakeUsersErrorMessage.observeAsState()
+    val storeFakeUsersErrorMessage by viewModel.storeFakeUsersErrorMessage.observeAsState()
+    val queryFakeUsersErrorMessage by viewModel.queryFakeUsersErrorMessage.observeAsState()
 
     sendCommandErrorMessage?.let {
-        Toast.makeText(
-            context,
-            "There was an error sending the bot command!",
-            Toast.LENGTH_LONG
-        ).show()
-
+        Toast.makeText(context, "There was an error sending the bot command!", Toast.LENGTH_LONG).show()
         Log.e("ChatScreen", "There was an error sending a command: $it")
+    }
+    fetchFakeUsersErrorMessage?.let {
+        Toast.makeText(context, "There was an error fetching fake user data!", Toast.LENGTH_LONG).show()
+        Log.e("ChatScreen", "There was an error fetching the fake user data: $it")
+    }
+    storeFakeUsersErrorMessage?.let {
+        Toast.makeText(context, "There was an error storing the fake user data!", Toast.LENGTH_LONG).show()
+        Log.e("ChatScreen", "There was an error storing the fake user data: $it")
+    }
+    queryFakeUsersErrorMessage?.let {
+        Toast.makeText(context, "There was an error querying the fake user data!", Toast.LENGTH_LONG).show()
+        Log.e("ChatScreen", "There was an error querying the fake user data: $it")
     }
 
     Column(modifier = Modifier.padding(horizontal = 10.dp)) {
-        InputTextBox(viewModel)
+        InputTextBox(context, viewModel)
         Spacer(modifier = Modifier.height(20.dp))
         ChatHistory(viewModel)
     }
 }
 
 @Composable
-fun InputTextBox(viewModel: ChatViewModel) {
+fun InputTextBox(context: Context, viewModel: ChatViewModel) {
     var text by remember { mutableStateOf("") }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -60,11 +70,7 @@ fun InputTextBox(viewModel: ChatViewModel) {
             label = { Text(text = "Enter a command!") }
         )
         Spacer(modifier = Modifier.width(20.dp))
-        Button(
-            onClick = {
-                viewModel.sendBotCommand(text)
-            }
-        ) {
+        Button(onClick = { viewModel.sendBotCommand(context, text) }) {
             Text(text = "Submit")
         }
     }
